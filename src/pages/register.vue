@@ -1,6 +1,10 @@
 <template>
   <div class="register">
-    <van-nav-bar title="注册" fixed left-arrow/>
+    <van-nav-bar title="注册" 
+    fixed 
+    left-arrow
+    @click-left="back"
+    />
 
     <div class="form">
       <li>
@@ -67,6 +71,9 @@ export default {
     [Button.name]: Button
   },
   methods: {
+    back () {
+      this.$router.go(-1)
+    },
     validate () {
       if (!this.form.mobile) {
         this.$toast('请输入手机号')
@@ -108,7 +115,7 @@ export default {
         type: 1,
         mobile: this.form.mobile
       }).then(data => {
-        this.$toast('验证码已发送，请在5分钟内输入')
+        this.$toast(data.msg)
       })
       this.timer = setInterval(() => {
         const timecount = this.timecount

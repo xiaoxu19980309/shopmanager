@@ -33,6 +33,9 @@ export default {
 [data-dpr="3"] div {
   font-size: 36px !important;
 } */
+.van-nav-bar {
+  background-image:-webkit-linear-gradient( 180deg, rgb(32,178,170) 0%, rgb(72,209,204) 100%) 
+}
 .van-nav-bar .van-icon {
   color: #fff !important;
 }

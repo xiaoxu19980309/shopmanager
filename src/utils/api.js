@@ -21,8 +21,18 @@ const API = {
   delPlu: '/shop/del_plu',//解除plu绑定
   getnopluGoods: '/shop/noplu_goods',//获取没有plu的菜
   getsaletable: '/shop/vue_getShopSales',//获取销售统计表
-  getsalegraph: '/shop/marketpayinfo',//获取销售折线图
+  getsale: '/shop/marketpayinfo',//获取销售折线图
   editShop: '/shop/edit_shopname',  //修改店铺名
+  changePsd: '/shop/change_pwd',//修改密码
+  checkDevice: '/shop/is_device',//检测秤是否未绑定
+  addAlipay: '/shop/add_account',//添加收款账号
+  getAlipay: '/shop/get_account',//获取收款账号列表
+  todaySale: '/shopmanager/today_sales',//获取主页面当天数据统计
+  addDevice: '/shop/bind_device',//增加设备以及绑定alipayPID
+  //checkBill: '/shopmanager/duizhang',//对账
+  bill: '/shopmanager/get_bill',//获取账单
+  deleteDevice: '/shop/deviceDel',//解绑设备
+  bookDevice: '/shopmanager/book_device'//预订产品
   // getCategories: '/web_get_category',
   // modifyCategory: '/web_set_category',
   // addCategory: '/web_set_category',

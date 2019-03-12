@@ -11,6 +11,13 @@ const Shop = () => import(/* webpackChunkName: "shop" */'@/pages/shop')
 const EditShop = () => import(/* webpackChunkName: "editShop" */'@/pages/editShop')
 const ShopSale = () => import(/* webpackChunkName: "shopSale" */'@/pages/shopSale')
 const ShopCard = () => import(/* webpackChunkName: "shopCard" */'@/pages/shopCard')
+const ShopList = () => import(/* webpackChunkName: "ShopList" */'@/pages/ShopList')//店铺列表
+const ChangePsd =() => import(/* webpackChunkName: "ChangePsd" */'@/pages/ChangePsd')//修改密码
+const PayReq   = () => import(/* webpackChunkName: "PayReq" */'@/pages/PayReq')//支付申请
+const DeviceControl = () => import(/* webpackChunkName: "DeviceControl" */'@/pages/DeviceControl')//设备管理
+const ShopOrder = () => import(/* webpackChunkName: "ShopOrder" */'@/pages/ShopOrder')//销售详情
+const CheckBill = () => import(/* webpackChunkName: "CheckBill" */'@/pages/CheckBill')//对账
+const BookDevice = () => import(/* webpackChunkName: "BookDevice" */'@/pages/BookDevice')//产品预订
 // const ShopSaleTable = () => import(/* webpackChunkName: "shopSaleTable" */'@/pages/shopSaleTable')
 
 Vue.use(Router)
@@ -20,7 +27,8 @@ export default new Router({
     {
       path: '/',
       name: 'Root',
-      component: Login
+      component: Home,
+      meta: { requireAuth: true }
     },
     //密码登录
     {
@@ -47,11 +55,60 @@ export default new Router({
       component: Home,
       meta: { requireAuth: true }
     },
-    //修改个人信息
+    //个人信息
     {
       path: '/updateCard',
       name: 'UpdateCard',
       component: UpdateCard,
+      meta: { requireAuth: true }
+    },
+    //设备管理
+    {
+      path: '/deviceControl',
+      name: 'DeviceControl',
+      component: DeviceControl,
+      meta: { requireAuth: true }
+    },
+    //收款账号
+    {
+      path: '/payReq',
+      name: 'PayReq',
+      component: PayReq,
+      meta: { requireAuth: true }
+    },
+    //销售统计
+    {
+      path: '/shopOrder',
+      name: 'ShopOrder',
+      component: ShopOrder,
+      meta: { requireAuth: true }
+    },
+    //对账
+    {
+      path: '/checkBill',
+      name: 'CheckBill',
+      component: CheckBill,
+      meta: { requireAuth: true }
+    },
+    //产品预订
+    {
+      path: '/bookDevice',
+      name: 'BookDevice',
+      component: BookDevice,
+      meta: { requireAuth: true }
+    },
+    //修改密码
+    {
+      path: '/changePsd',
+      name: 'ChangePsd',
+      component: ChangePsd,
+      meta: { requireAuth: true }
+    },
+    //店铺管理
+    {
+      path: '/shopList',
+      name: 'ShopList',
+      component: ShopList,
       meta: { requireAuth: true }
     },
     //开店
