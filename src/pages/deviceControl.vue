@@ -12,13 +12,12 @@
     >
     </van-nav-bar>
 
-    <div class="list">
+    <div class="list"> -->
       <!-- 设备列表 -->
       <template v-if="list.length > 0">
           <van-cell-group 
             v-for="(item, i) in list"
-            :key="item.id"
-            class="devices"
+            :key="i"
           >
             <van-field 
               :label="`设备${i+1},ID：`"  
@@ -30,9 +29,49 @@
               >解绑
               </van-button>
             </van-field>
-          </van-cell-group>
-      </template>
-      <p class="nomore" v-else>你还没有设备，请点击右上角“增加设备”按钮进行设备添加</p>
+            
+
+           </van-cell-group>
+       </template>
+      <!-- <div class="totalnum">
+              <van-row class="td-33">
+                <van-col span="8">
+                  <span>序号</span>
+                </van-col>
+                <van-col span="8">
+                  <span>设备ID</span>
+                </van-col>
+                <van-col span="8">
+                  <span>操作</span>
+                </van-col>
+              </van-row>
+              
+              <template v-if="list.length > 0">
+                <van-cell-group
+                  v-for="(item,i) in list"
+                  :key="i"
+                >
+                  <div class="list">
+                    <van-row class="td-34">
+                      <van-col span="8">
+                        <span>设备{{i+1}}</span>
+                      </van-col>
+                      <van-col span="8">
+                        <span>{{item.pcbid}}</span>
+                      </van-col>
+                      <van-col span="8">
+                        <van-button size="small"  type="warning"
+                          @click.native="deleteDevice(i)"
+                        >解绑
+                        </van-button>
+                      </van-col>
+                    </van-row>
+                  </div>
+                </van-cell-group>
+
+              </template>
+              <p class="nomore" v-else>你还没有设备，请点击右上角“增加设备”按钮进行设备添加</p>
+            </div> -->
     </div>
 
     <van-popup v-model="add_dev_first" position="right">
@@ -55,9 +94,13 @@
           v-model="area"
           label="区域"
           placeholder="请选择区域"
-          @click="showarea = true"
+          disabled
           required
         >
+          <van-button size="small" slot="button" type="primary"
+            @click.native="showarea = true"
+          >选择
+          </van-button>
         </van-field>
         <van-field
           v-model="addressfix"
@@ -198,6 +241,7 @@ export default {
       add_alipay: false,//第三步
       pcbid: '',//设备pcbid
       area: '',//选择地址
+      areacode: '',//区域地址code
       showarea: false,
       addressfix: '',//详细地址
       form: {
@@ -219,7 +263,7 @@ export default {
       this.$router.push({name: 'Login'})
     }
     let alipid = this.fetchPID()
-    this.form.alipid = alipid
+    this.form.alipayid = alipid
     const mobile = this.mobile
     this.axios.post(API.get_Devices, { mobile }).then(data => {
       this.list = data.data
@@ -270,6 +314,7 @@ export default {
     },
     getarea (value) {
       this.area = value[0].name+value[1].name+value[2].name
+      this.areacode = value[2].code
       this.showarea = false
     },
     submit_first () {
@@ -281,6 +326,7 @@ export default {
           this.add_dev_second = true
         }).catch(e=> {
           this.$toast('设备ID不正确')
+          return
           this.gLoading = false
       })
       setTimeout(() => {
@@ -294,32 +340,33 @@ export default {
         })
       }, 1000);
     },
-    //获取支付宝PID
-    getCode () {
-      //window.location.href='https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019030563436991&scope=auth_base&redirect_uri=http%3a%2f%2fzfbsmf.edianlai.com%2findex%2fSmzf%2fget_pid%3fpcbid%3d1234'
-      // var ua = window.navigator.userAgent.toLowerCase()
-      // if (ua.match(/AlipayClient/i) == 'alipayclient') {
-      //   //window.open("https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019030763480371&scope=auth_base&redirect_uri=http%3a%2f%2fgtsh.edianlai.com%2findex%2fSmzf%2fget_pid%3fpcbid%3d1234")
-      //   this.ali_PID = this.fetchPID()
-      //   alert(this.ali_PID)
-      // }else{
-	    // 	this.$toast('请用支付宝扫码')
-	    // }
-
-    },
     //解绑设备
     deleteDevice (i) {
       const pcbid = this.list[i].pcbid
-      this.axios.post(API.deleteDevice, { pcbid }).then(data => {
-        let user = JSON.parse(localStorage.getItem('user'))
-        this.list.splice(i, 1)
-        user.shopinfo = JSON.parse(JSON.stringify(this.list))
-        localStorage.setItem('user', JSON.stringify(user))
-        this.$toast('设备解绑成功')
-        this.back()
+      Dialog.confirm({
+        message: '解绑后该设备将无法进行网络支付，请慎重操作！'
+      }).then(()=>{
+        this.gLoading = true
+          this.axios.post(API.deleteDevice, { pcbid }).then(data => {
+          this.list.splice(i, 1)
+          localStorage.setItem('list', JSON.stringify(this.list))
+          this.$toast('设备解绑成功')
+          this.back()
+        }).catch(e => {
+
+        })
       }).catch(e => {
 
       })
+      // this.axios.post(API.deleteDevice, { pcbid }).then(data => {
+      //   let user = JSON.parse(localStorage.getItem('user'))
+      //   this.list.splice(i, 1)
+      //   localStorage.setItem('list', JSON.stringify(this.list))
+      //   this.$toast('设备解绑成功')
+      //   this.back()
+      // }).catch(e => {
+
+      // })
     },
     //为该设备绑定已有的收款账户,i为收款账户列表的下标
     bind_device(i){
@@ -328,7 +375,8 @@ export default {
       const mobile = this.mobile//手机号
       const area = this.area//区域
       const address = this.addressfix//详细地址
-      this.axios.post(API.addDevice, { ali_PID, pcbid, mobile, area, address }).then(data => {
+      const areacode = this.areacode//区域code
+      this.axios.post(API.addDevice, { ali_PID, pcbid, mobile, area, areacode, address }).then(data => {
         this.back()
       }).catch(e => {
 
@@ -340,7 +388,7 @@ export default {
     },
     submit_addalipay () {
       //增加收款账户
-      if(this.validate()) return 
+      if(!this.validate()) return 
       const mobile = this.mobile
       const name = this.form.name
       const identity = this.form.id
@@ -348,10 +396,10 @@ export default {
       const alipay_username = this.form.alipay_username
       this.axios.post(API.addAlipay, { name, mobile, identity, ali_PID, alipay_username }).then(data => {
         this.loading = false
+        this.add_alipay = false
       }).catch(e => {
         this.loading = false
       })
-      this.add_alipay = false
     },
     // 关闭店铺
     // closeShop (i) {
@@ -406,7 +454,25 @@ export default {
   min-height: 100vh;
   padding-top: 46px;
 }
-
+.totalnum {
+  width: 100%;
+  /* height: 4.6rem; */
+  background-color: #fff;
+  /* background-image:radial-gradient( #20B2AA, #48D1CC ); */
+  color: black;
+  text-align: center;
+  font-size: 16px;
+  box-shadow: 0 1px 6px #fff;
+  padding: 10px 0px;
+  margin: 10px 0px;
+}
+.td-34 {
+  line-height: 100%;
+  margin: 0 auto;
+}
+.list {
+  /* margin-bottom: 5px; */
+}
 .open-shop {
   background-color: #08979c;
   color: #fff;

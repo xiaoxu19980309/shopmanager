@@ -70,7 +70,8 @@
             </router-link>
           </van-col>
           <van-col span="6">
-            <router-link to="/shopList">
+            <router-link to="">
+              <!-- /shopList -->
               <i class="iconfont icon-zonghe-copy" style="color:#08979c"></i><br>
               <span>店铺管理</span>
             </router-link>

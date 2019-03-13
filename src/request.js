@@ -6,11 +6,11 @@ const vm = new Vue()
 axios.defaults.withCredentials = true
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
 // dev
-// axios.defaults.baseURL = 'apis/api'
+axios.defaults.baseURL = 'apis/api'
 
 // product
 // 'http://balala.edianlai.com/api'
-axios.defaults.baseURL = '/api'
+// axios.defaults.baseURL = '/api'
 
 // POST传参序列化
 axios.interceptors.request.use((config) => {
