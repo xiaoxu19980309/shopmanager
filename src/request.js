@@ -9,7 +9,6 @@ axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded
 axios.defaults.baseURL = 'apis/api'
 
 // product
-// 'http://balala.edianlai.com/api'
 // axios.defaults.baseURL = '/api'
 
 // POST传参序列化

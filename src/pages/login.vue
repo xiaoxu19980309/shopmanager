@@ -45,12 +45,6 @@ export default {
   },
   mounted () {
     localStorage.clear()
-    // try{
-    //   let ali_PID = JSON.parse(localStorage.getItem('ali_PID'))
-    // }catch (e) {
-    //   window.open='https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019030763480371&scope=auth_base&redirect_uri=http%3a%2f%2fbalala.edianlai.com%2findex%2fvue%2fnew_login%3fpcbid%3d1234'
-    //   alert(1)
-    // }
     
   },
   methods: {
