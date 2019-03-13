@@ -52,15 +52,17 @@
           required
         />
         <van-field
+          v-model="form.alipayusername"
+          label="支付宝账号"
+          placeholder="请输入支付宝账号"
+          required
+        />
+        <van-field
           v-model="form.alipayid"
           label="支付宝PID"
           placeholder="请输入支付宝PID"
           required
         >
-          <van-button size="small" slot="button" type="primary"
-            @click.native="getCode"
-          >获取支付宝PID
-          </van-button>
         </van-field>
       </div>
     </van-popup>
@@ -71,7 +73,7 @@
 <script>
 import {
   SwipeCell, Cell, CellGroup,
-  Dialog, NavBar,Toast,
+  Dialog, NavBar,Toast,Area,
   Row, Col, Button, Icon, Field,
   Popup, List, Swipe,NumberKeyboard
 } from 'vant'
@@ -94,6 +96,7 @@ export default {
     [Popup.name]: Popup,
     [Toast.name]: Toast,
     [List.name]: List,
+    [Area.name]: Area,
     [NumberKeyboard.name]: NumberKeyboard,
     Loading
   },
@@ -109,27 +112,37 @@ export default {
       form: {
         id: '',//身份证号
         name: '',//真实姓名
+        address: '',//地址
+        alipayusername: '',//alipayusername
         alipayid: '',//支付宝id
-      }
+      },
+      ali_PID: '',
     }
   },
   mounted () {
     let { mobile,name } = this.$route.query
+    let alipid  = this.fetchPID()
+    this.form.alipayid = alipid
     if(mobile){
       this.mobile = mobile
     }else{
-      let user = JSON.parse(localStorage.getItem('user'))
-      this.mobile = user.mobile
-      const mobile = this.mobile
-      this.loading = true
-      this.axios.post(API.getAlipay, {mobile}).then(data => {
-        this.loading = false
-        this.alilist = data
-      }).catch(e => {
-        this.loading = false
-      })
+      try{
+        let user = JSON.parse(localStorage.getItem('user'))
+        this.mobile = user.mobile
+        const mobile = this.mobile
+        this.loading = true
+        this.axios.post(API.getAlipay, {mobile}).then(data => {
+          this.loading = false
+          this.alilist = data
+        }).catch(e => {
+          this.loading = false
+        })
+      }catch (e) {
+        this.$toast('您还未登录')
+        this.$router.push({name: 'Login'})
+      }
+      
     }
-
   },
   methods: {
     back() {
@@ -158,12 +171,17 @@ export default {
     //获取支付宝PID
     getCode () {
       //window.location.href='https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019030563436991&scope=auth_base&redirect_uri=http%3a%2f%2fzfbsmf.edianlai.com%2findex%2fSmzf%2fget_pid%3fpcbid%3d1234'
-      var ua = window.navigator.userAgent.toLowerCase()
-      if (ua.match(/AlipayClient/i) == 'alipayclient') {
-        window.open("https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019030763480371&scope=auth_base&redirect_uri=http%3a%2f%2fgtsh.edianlai.com%2findex%2fSmzf%2fget_pid%3fpcbid%3d1234")
-      }else{
-	    	this.$toast('请用支付宝扫码')
-	    }
+      //var ua = window.navigator.userAgent.toLowerCase()
+      //if (ua.match(/AlipayClient/i) == 'alipayclient') {
+        //window.open("https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019030763480371&scope=auth_base&redirect_uri=http%3a%2f%2fgtsh.edianlai.com%2findex%2fSmzf%2fget_pid%3fpcbid%3d1234")
+        // this.ali_PID = this.fetchPID()
+        // alert(this.ali_PID)
+      //}
+      this.ali_PID = this.fetchPID()
+    alert(this.ali_PID)
+      // else{
+	    // 	this.$toast('请用支付宝扫码')
+	    // }
 
     },
     //增加收款账号
@@ -173,8 +191,9 @@ export default {
       const name = this.form.name//真实姓名
       const identity = this.form.id//身份证号
       const ali_PID = this.form.alipayid//支付宝账号
+      const alipay_username = this.form.alipayusername
       const mobile = this.mobile//手机号
-      let params = { mobile, name, identity, ali_PID }
+      let params = { mobile, name, identity, ali_PID,alipay_username }
       this.axios.post(API.addAlipay, params).then(data => {
         this.loading = false
         this.back()

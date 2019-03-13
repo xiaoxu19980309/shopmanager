@@ -101,9 +101,13 @@ export default {
     if(mobile){
       this.mobile = mobile
     }else{
-      let user = JSON.parse(localStorage.getItem('user'))
-      this.mobile = user.mobile
-      const mobile = this.mobile
+      try {
+        let { mobile } = JSON.parse(localStorage.getItem('user'))
+        this.mobile = mobile
+      } catch (e) {
+        this.$toast('您还未登录')
+        this.$router.push({name: 'Login'})
+      }
     }
 
   },

@@ -84,6 +84,13 @@ export default {
     Loading
   },
   mounted () {
+    try {
+      let { mobile } = JSON.parse(localStorage.getItem('user'))
+      this.mobile = mobile
+    } catch (e) {
+      this.$toast('您还未登录')
+      this.$router.push({name: 'Login'})
+    }
     this.form.mobile = this.$route.query.mobile
     this.getmodel()
   },

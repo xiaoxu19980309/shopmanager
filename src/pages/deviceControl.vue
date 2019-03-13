@@ -49,8 +49,32 @@
           v-model="pcbid"
           label="设备ID"
           placeholder="请输入设备ID"
+          required
+        />
+        <van-field
+          v-model="area"
+          label="区域"
+          placeholder="请选择区域"
+          @click="showarea = true"
+          required
+        >
+        </van-field>
+        <van-field
+          v-model="addressfix"
+          label="详细地址"
+          placeholder="请输入详细地址"
+          required
         />
       </div>
+    </van-popup>
+
+    <van-popup v-model="showarea" position="bottom">
+      <van-area 
+      :area-list="areaList" 
+      value="110101" 
+      @cancel="showarea = false"
+      @confirm="(value)=>getarea(value)"
+      />
     </van-popup>
 
     <van-popup v-model="add_dev_second" position="right">
@@ -109,15 +133,17 @@
           required
         />
         <van-field
+          v-model="form.alipay_username"
+          label="支付宝账号"
+          placeholder="请输入支付宝账号"
+          required
+        />
+        <van-field
           v-model="form.alipayid"
           label="支付宝PID"
           placeholder="请输入支付宝PID"
           required
         >
-          <van-button size="small" slot="button" type="primary"
-            @click.native="getCode"
-          >获取支付宝PID
-          </van-button>
         </van-field>
       </div>
     </van-popup>
@@ -127,13 +153,15 @@
 
 <script>
 import {
-  Cell, CellGroup,
+  Cell, CellGroup,Area,
    Dialog, NavBar,RadioGroup, Radio,
   Row, Col, Button, Icon, Field,
   Popup, List,PullRefresh,
 } from 'vant'
+import { areaList } from '@/utils/area'
 import { API } from '@/utils/api'
 import Loading from '@/components/Loading'
+import commonMixin from '@/utils/mixin'
 export default {
   name: 'DeviceControl',
   components: {
@@ -144,6 +172,7 @@ export default {
     [Radio.name]: Radio,
     [Row.name]: Row,
     [Col.name]: Col,
+    [Area.name]: Area,
     [Button.name]: Button,
     [Icon.name]: Icon,
     VanDialog: Dialog,
@@ -153,6 +182,7 @@ export default {
     [PullRefresh.name]: PullRefresh,
     Loading
   },
+  mixins: [commonMixin],
   data () {
     return {
       gLoading: false,
@@ -167,15 +197,20 @@ export default {
       add_dev_second: false,//第二步
       add_alipay: false,//第三步
       pcbid: '',//设备pcbid
+      area: '',//选择地址
+      showarea: false,
+      addressfix: '',//详细地址
       form: {
         id: '',//身份证号
         name: '',//真实姓名
+        alipay_username: '',//支付宝账号
         alipayid: '',//支付宝id
       },
-
+      areaList: '',
     }
   },
   mounted () {
+    this.areaList = areaList
     try {
       let { mobile,name,shopinfo } = JSON.parse(localStorage.getItem('user'))
       this.mobile = mobile
@@ -183,6 +218,8 @@ export default {
       this.$toast('您还未登录')
       this.$router.push({name: 'Login'})
     }
+    let alipid = this.fetchPID()
+    this.form.alipid = alipid
     const mobile = this.mobile
     this.axios.post(API.get_Devices, { mobile }).then(data => {
       this.list = data.data
@@ -195,6 +232,21 @@ export default {
 
     back () {
       this.$router.go(-1)
+    },
+    validate_fir () {
+      if (!this.pcbid) {
+        this.$toast('请输入设备ID！')
+        return false
+      }
+      if (!this.area) {
+        this.$toast('请选择区域！')
+        return false
+      }
+      if (!this.addressfix) {
+        this.$toast('请输入详细地址')
+        return false
+      }
+      return true
     },
     //检查表单内容
     validate () {
@@ -216,41 +268,43 @@ export default {
     addDevice () {
       this.add_dev_first = true
     },
+    getarea (value) {
+      this.area = value[0].name+value[1].name+value[2].name
+      this.showarea = false
+    },
     submit_first () {
       //要通过接口确认ID有效，没有绑定，不能重复。
-      const pcbid = this.pcbid
-      if(this.pcbid!==''){
-        this.axios.post(API.checkDevice, {pcbid}).then(data => {
-            this.gLoading = false
-            this.add_dev_second = true
-          }).catch(e=> {
-            this.$toast('设备ID不正确')
-            this.gLoading = false
+      if(!this.validate_fir()) return
+      const pcbid = this.pcbid.toLowerCase()
+      this.axios.post(API.checkDevice, {pcbid}).then(data => {
+          this.gLoading = false
+          this.add_dev_second = true
+        }).catch(e=> {
+          this.$toast('设备ID不正确')
+          this.gLoading = false
+      })
+      setTimeout(() => {
+        const mobile = this.mobile
+        this.loading = true
+        this.axios.post(API.getAlipay, {mobile}).then(data => {
+          this.alilist = data
+          this.loading = false
+        }).catch(e => {
+          this.loading = false
         })
-        setTimeout(() => {
-          const mobile = this.mobile
-          this.loading = true
-          this.axios.post(API.getAlipay, {mobile}).then(data => {
-            this.alilist = data
-            this.loading = false
-          }).catch(e => {
-            this.loading = false
-          })
-        }, 1000);
-      }else{
-        this.$toast('请输入设备ID')
-      }
-      
+      }, 1000);
     },
     //获取支付宝PID
     getCode () {
       //window.location.href='https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019030563436991&scope=auth_base&redirect_uri=http%3a%2f%2fzfbsmf.edianlai.com%2findex%2fSmzf%2fget_pid%3fpcbid%3d1234'
-      var ua = window.navigator.userAgent.toLowerCase()
-      if (ua.match(/AlipayClient/i) == 'alipayclient') {
-        window.open("https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019030763480371&scope=auth_base&redirect_uri=http%3a%2f%2fgtsh.edianlai.com%2findex%2fSmzf%2fget_pid%3fpcbid%3d1234")
-      }else{
-	    	this.$toast('请用支付宝扫码')
-	    }
+      // var ua = window.navigator.userAgent.toLowerCase()
+      // if (ua.match(/AlipayClient/i) == 'alipayclient') {
+      //   //window.open("https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019030763480371&scope=auth_base&redirect_uri=http%3a%2f%2fgtsh.edianlai.com%2findex%2fSmzf%2fget_pid%3fpcbid%3d1234")
+      //   this.ali_PID = this.fetchPID()
+      //   alert(this.ali_PID)
+      // }else{
+	    // 	this.$toast('请用支付宝扫码')
+	    // }
 
     },
     //解绑设备
@@ -270,9 +324,11 @@ export default {
     //为该设备绑定已有的收款账户,i为收款账户列表的下标
     bind_device(i){
       const ali_PID = this.alilist[i].ali_PID
-      const pcbid = this.pcbid
-      const mobile = this.mobile
-      this.axios.post(API.addDevice, { ali_PID, pcbid, mobile }).then(data => {
+      const pcbid = this.pcbid//设备号
+      const mobile = this.mobile//手机号
+      const area = this.area//区域
+      const address = this.addressfix//详细地址
+      this.axios.post(API.addDevice, { ali_PID, pcbid, mobile, area, address }).then(data => {
         this.back()
       }).catch(e => {
 
@@ -289,7 +345,8 @@ export default {
       const name = this.form.name
       const identity = this.form.id
       const ali_PID = this.form.alipayid
-      this.axios.post(API.addAlipay, { name, mobile, identity, ali_PID }).then(data => {
+      const alipay_username = this.form.alipay_username
+      this.axios.post(API.addAlipay, { name, mobile, identity, ali_PID, alipay_username }).then(data => {
         this.loading = false
       }).catch(e => {
         this.loading = false

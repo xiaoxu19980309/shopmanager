@@ -182,9 +182,22 @@ export default {
       // currentIdx: 0, // 当前编辑项
       isLoading: false,
       active: 0,
+      alipid: '',//aliPID
     }
   },
   mounted () {
+    try{
+      let user_id = JSON.parse(localStorage.getItem('alipid'))
+      if(user_id){
+        this.alipid = user_id
+      }else{
+        this.alipid = this.fetchPID()
+        //alert(this.alipid)
+      }
+    }catch (e) {
+
+    }
+    
     try {
       let { mobile,name,shopinfo } = JSON.parse(localStorage.getItem('user'))
       this.mobile = mobile
@@ -194,7 +207,6 @@ export default {
       this.$toast('您还未登录')
       this.$router.push({name: 'Login'})
     }
-    
   },
   methods: {
     //销售统计页面
@@ -215,6 +227,8 @@ export default {
         }else{
           this.$router.push({ name: 'ShopOrder', query: { mobile }})
         }
+      }).catch(e => {
+
       })
     },
     to_mine () {

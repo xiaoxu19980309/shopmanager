@@ -194,6 +194,13 @@ export default {
     }
   },
   mounted () {
+    try {
+      let { mobile } = JSON.parse(localStorage.getItem('user'))
+      this.mobile = mobile
+    } catch (e) {
+      this.$toast('您还未登录')
+      this.$router.push({name: 'Login'})
+    }
     let shop = JSON.parse(localStorage.getItem('currentShop'))
     if (shop) {
       this.shopid = shop.shopid

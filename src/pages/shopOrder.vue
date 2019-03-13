@@ -162,15 +162,21 @@ export default {
   },
   mounted () {
     // this.LopTime()
-    let { mobile,name } = this.$route.query
+    let { mobile } = this.$route.query
     if(mobile){
       this.mobile = mobile
     }else{
-      let user = JSON.parse(localStorage.getItem('user'))
-      this.mobile = user.mobile
+        try {
+        let { mobile } = JSON.parse(localStorage.getItem('user'))
+        this.mobile = mobile
+        this.month = this.currentDate.getMonth()+1
+        this.getOrder()
+      } catch (e) {
+        this.$toast('您还未登录')
+        this.$router.push({name: 'Login'})
+      }
     }
-    this.month = this.currentDate.getMonth()+1
-    this.getOrder()
+    
   },
   methods: {
     back () {

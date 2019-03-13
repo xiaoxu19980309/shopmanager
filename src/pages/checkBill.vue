@@ -72,7 +72,7 @@
                     <span>{{(i+1)+15*(page-1)}}</span>
                   </van-col>
                   <van-col span="11">
-                    <span>{{item.tradeno}}</span>
+                    <span>{{item.out_trade_no}}</span>
                   </van-col>
                   <van-col span="4">
                     <span>¥{{item.totalamount}}</span>
@@ -178,11 +178,17 @@ export default {
     if(mobile){
       this.mobile = mobile
     }else{
-      let user = JSON.parse(localStorage.getItem('user'))
-      this.mobile = user.mobile
+      try {
+        let { mobile } = JSON.parse(localStorage.getItem('user'))
+        this.mobile = mobile
+        this.month = this.currentDate.getMonth()+1
+        this.getBill()
+      } catch (e) {
+        this.$toast('您还未登录')
+        this.$router.push({name: 'Login'})
+      }
     }
-    this.month = this.currentDate.getMonth()+1
-    this.getBill()
+    
   },
   methods: {
     back () {

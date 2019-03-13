@@ -38,13 +38,12 @@
         </van-button>
       </van-field>
       <van-field
-        :value = psd
+        v-model="psd"
         type="password"
         required
         clearable
         label="密码"
         placeholder="请输入新密码"
-        @touchstart.native.stop="show1 = true"
         @clear="clear1"
       />
       <van-field
@@ -53,28 +52,9 @@
         label="确认密码"
         placeholder="请再次输入密码"
         required
-        @touchstart.native.stop="show2 = true"
         @clear="clear2"
       />
     </van-cell-group>
-
-    <van-number-keyboard
-      :show="show1"
-      extra-key="."
-      close-button-text="完成"
-      @blur="show1 = false"
-      @input="onInput1"
-      @delete="onDelete1"
-    />
-
-    <van-number-keyboard
-      :show="show2"
-      extra-key="."
-      close-button-text="完成"
-      @blur="show2 = false"
-      @input="onInput2"
-      @delete="onDelete2"
-    />
 
     </div>
 </template>
@@ -118,8 +98,6 @@ export default {
       sms: '',//短信验证码
       psd: '',//密码
       psdconfirm: '',//确认密码
-      show1: false,
-      show2: false,
       timer: 0,
       timecount: 60,
     }
@@ -129,8 +107,13 @@ export default {
     if(mobile){
       this.mobile = mobile
     }else{
-      let user = JSON.parse(localStorage.getItem('user'))
-      this.mobile = user.mobile
+      try {
+        let { mobile } = JSON.parse(localStorage.getItem('user'))
+        this.mobile = mobile
+      } catch (e) {
+        this.$toast('您还未登录')
+        this.$router.push({name: 'Login'})
+      }
     }
   },
   methods: {
@@ -191,23 +174,11 @@ export default {
       }
       return true
     },
-    onInput1 (key) {
-      this.psd = this.psd + key
-    },
     clear1 () {
       this.psd = ''
     },
-    onDelete1 () {
-      this.psd = this.psd.slice(0, this.psd.length - 1)
-    },
-    onInput2 (key) {
-      this.psdconfirm = this.psdconfirm + key
-    },
     clear2 () {
       this.psdconfirm = ''
-    },
-    onDelete2 () {
-      this.psdconfirm = this.psdconfirm.slice(0, this.psdconfirm.length - 1)
     },
     clear3 () {
       this.mobile = ''
