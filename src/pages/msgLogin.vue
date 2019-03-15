@@ -106,12 +106,10 @@ export default {
         this.loading = false
         localStorage.setItem('user', JSON.stringify(data))
         this.$toast('登录成功')
-        if(data.type===0){
-          this.$router.push({name: 'Home'})
-        }
-        else if(data.type===1){
+        if(data.type===1){
           this.$router.push({name: 'HomeDealer'})
         }
+        this.$router.push({name: 'Home'})
       }).catch(e => {
         this.loading = false
       })
