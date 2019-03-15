@@ -39,10 +39,10 @@
               >
               <van-button slot="button" size="small" type="danger" @click="closeShop()">关店</van-button>
               </van-field>
-              <van-cell title="秤的绑定" is-link @click.native="() => deviceBind()">
+              <!-- <van-cell title="秤的绑定" is-link @click.native="() => deviceBind()">
               </van-cell>
               <van-cell title="秤的解绑" is-link @click.native="() => deviceDelete()">
-              </van-cell>
+              </van-cell> -->
             </van-cell-group>
           </div>
           
@@ -165,12 +165,12 @@ export default {
       this.showEdit = true
     },
     //秤的绑定
-    deviceBind() {
-      this.showBind = true
-    },
-    deviceDelete() {
-      this.showdevices = true
-    },
+    // deviceBind() {
+    //   this.showBind = true
+    // },
+    // deviceDelete() {
+    //   this.showdevices = true
+    // },
     // 提交修改
     submit () {
       if (!this.shopname) {
@@ -273,8 +273,11 @@ export default {
     // 获取设备列表
     getDevices(shopid){
       this.loading = true
-      this.axios.post(API.get_Devices, { shopid: shopid }).then(data => {
+      this.axios.post(API.getDevicesByShopid, { 'shop_id': shopid }).then(data => {
         this.loading = false
+        if(data.length===0){
+          this.$toast('该店铺下没有秤')
+        }
         data.map(function (item) {
           return {...item, checked: false}
         })

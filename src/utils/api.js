@@ -32,7 +32,9 @@ const API = {
   //checkBill: '/shopmanager/duizhang',//对账
   bill: '/shopmanager/get_bill',//获取账单
   deleteDevice: '/shop/deviceDel',//解绑设备
-  bookDevice: '/shopmanager/book_device'//预订产品
+  bookDevice: '/shopmanager/book_device',//预订产品
+  getDevicesByShopid: '/shop/GetDevicesByShopId',//通过shopid获取设备shop_id
+  getDevicesByMemberMobile: '/shop/GetDevicesByMemberMobile',//通过手机号获取设备
   // getCategories: '/web_get_category',
   // modifyCategory: '/web_set_category',
   // addCategory: '/web_set_category',

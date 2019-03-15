@@ -44,11 +44,19 @@ export default {
         return userId;
       }
 
-      var uri = 'http://gtsh.edianlai.com/index/Smzf/GetPID';
-      uri = encodeURIComponent(uri);
-
-      window.open("https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019030763480371&scope=auth_base&redirect_uri=" + uri);
-      // window.close()
+      var ua = window.navigator.userAgent.toLowerCase();
+	    //判断是不是支付宝
+	    if (ua.match(/AlipayClient/i) == 'alipayclient') {
+        var uri = 'http://gtsh.edianlai.com/index/Smzf/GetPID';
+        uri = encodeURIComponent(uri);
+        window.open("https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id=2019030763480371&scope=auth_base&redirect_uri=" + uri);
+        // window.close()
+	    }
+	    else{
+        alert("请用支付宝扫码!")
+        window.close()
+	    }
+      
     },
 
     getQueryParams() {

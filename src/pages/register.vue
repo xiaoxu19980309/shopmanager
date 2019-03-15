@@ -16,6 +16,20 @@
         <input type="text" placeholder="请输入用户名" v-model="form.name">
       </li>
       <li>
+        <i class="iconfont icon-user"></i>
+        <input type="text" placeholder="用户类型" v-model="form.kind">
+        <van-button size="small" slot="button" type="primary"
+            @click.native="showpicker = true"
+          >选择用户类型
+          </van-button>
+        <!-- <select name="" id="">
+          <option value="0">请选择用户类型</option>
+          <option value="1">商户</option>
+          <option value="2">经销商</option>
+          <option value="3">厂家</option>
+        </select> -->
+      </li>
+      <li>
         <i class="iconfont icon-code"></i>
         <input type="tel" placeholder="请输入短信验证码" v-model="form.code">
         <van-button size="small"
@@ -43,12 +57,22 @@
         </span>
       </div>
     </div>
+
+    <van-popup v-model="showpicker" position="bottom">
+      <van-picker
+        :columns="columns"
+        show-toolbar
+        title="请选择用户类型"
+        @cancel="onCancel"
+        @confirm="onConfirm"
+        />
+    </van-popup>
   </div>
 </template>
 
 <script>
 import { API } from '@/utils/api'
-import { NavBar, Button } from 'vant'
+import { NavBar, Button,Picker,Popup } from 'vant'
 import md5 from 'md5'
 export default {
   name: 'Register',
@@ -58,17 +82,22 @@ export default {
         mobile: '',
         code: '',
         password: '',
-        name: ''
+        name: '',
+        kind: '',
       },
+      columns: ['商户', '经销商', '厂家'],
       psdConfirm: '',
       timer: 0,
       timecount: 60,
-      loading: false
+      loading: false,
+      showpicker: false
     }
   },
   components: {
     [NavBar.name]: NavBar,
-    [Button.name]: Button
+    [Button.name]: Button,
+    [Picker.name]: Picker,
+    [Popup.name]: Popup,
   },
   methods: {
     back () {
@@ -126,6 +155,13 @@ export default {
           this.timecount = timecount - 1
         }
       }, 1000)
+    },
+    onConfirm(value, index) {
+      this.form.kind = this.columns[index]
+      this.showpicker = false
+    },
+    onCancel() {
+      this.showpicker = false
     },
     register () {
       if (!this.validate()) return

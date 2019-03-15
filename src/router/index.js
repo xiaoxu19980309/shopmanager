@@ -18,6 +18,8 @@ const DeviceControl = () => import(/* webpackChunkName: "DeviceControl" */'@/pag
 const ShopOrder = () => import(/* webpackChunkName: "ShopOrder" */'@/pages/ShopOrder')//销售详情
 const CheckBill = () => import(/* webpackChunkName: "CheckBill" */'@/pages/CheckBill')//对账
 const BookDevice = () => import(/* webpackChunkName: "BookDevice" */'@/pages/BookDevice')//产品预订
+const HomeDealer = () => import(/* webpackChunkName: "HomeDealer" */'@/pages/HomeDealer')//经销商主页
+const CollectInformation = () => import(/* webpackChunkName: "CollectInformation" */'@/pages/CollectInformation')//信息采集
 // const ShopSaleTable = () => import(/* webpackChunkName: "shopSaleTable" */'@/pages/shopSaleTable')
 
 Vue.use(Router)
@@ -53,6 +55,19 @@ export default new Router({
       path: '/home',
       name: 'Home',
       component: Home,
+      meta: { requireAuth: true }
+    },
+    //经销商主页面
+    {
+      path: '/homeDealer',
+      name: 'HomeDealer',
+      component: HomeDealer,
+      meta: { requireAuth: true }
+    },
+    {
+      path: '/collectInformation',
+      name: 'CollectInformation',
+      component: CollectInformation,
       meta: { requireAuth: true }
     },
     //个人信息
