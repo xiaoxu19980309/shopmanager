@@ -192,7 +192,7 @@ export default {
       if(user_id){
         this.alipid = user_id
       }else{
-        //this.alipid = this.fetchPID()
+        this.alipid = this.fetchPID()
         //alert(this.alipid)
       }
     }catch (e) {
