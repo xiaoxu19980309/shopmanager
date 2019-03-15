@@ -135,7 +135,7 @@
                 </div>
               </div>
               <div class="icon">
-                <i class="iconfont icon-icon_details" @click="$toast('身份认证栏')"></i>
+                <i class="iconfont icon-icon_details" @click="showimage"></i>
               </div>
             </div>
             
@@ -165,7 +165,7 @@
                 </div>
               </div>
               <div class="icon">
-                <i class="iconfont icon-icon_details" @click="$toast('支付宝账号栏')"></i>
+                <i class="iconfont icon-icon_details" @click="showimage"></i>
               </div>
             </div>
 
@@ -261,7 +261,7 @@
 
 <script>
 import {
-  Cell, CellGroup,
+  Cell, CellGroup,ImagePreview,
   Dialog, NavBar,Toast,Area,
   Row, Col, Button, Icon, Field,
   Popup, List,Picker
@@ -287,6 +287,7 @@ export default {
     [List.name]: List,
     [Area.name]: Area,
     [Picker.name]: Picker,
+    [ImagePreview.name]: ImagePreview,
     Loading
   },
   mixins: [commonMixin],
@@ -313,7 +314,7 @@ export default {
       showpicker: false,//显示选择经营类别的弹窗
       showarea: false,//显示选择区域的弹窗
       columns: ['猪肉', '牛羊肉', '蔬菜','水果','海鲜','豆制品','活禽','冻品','其它'],
-      areaList: '',
+      areaList: '',//地区数组
     }
   },
   mounted () {
@@ -322,10 +323,8 @@ export default {
     if(mobile){
       this.mobile = mobile
     }else{
-      try {
-        let { mobile } = JSON.parse(localStorage.getItem('user'))
-        this.mobile = mobile
-      } catch (e) {
+      this.mobile = this.hasLogin()
+      if(this.mobile===''){
         this.$toast('您还未登录')
         this.$router.push({name: 'Login'})
       }
@@ -368,6 +367,11 @@ export default {
       this.form.area = value[0].name+value[1].name+value[2].name
       this.areacode = value[2].code
       this.showarea = false
+    },
+    showimage () {
+      ImagePreview([
+      "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1553239704&di=a97dcd8ad82830cf0113d0366867ac2a&imgtype=jpg&er=1&src=http%3A%2F%2Fimgsa.baidu.com%2Fexp%2Fw%3D500%2Fsign%3De85d141ed054564ee565e43983de9cde%2Fb812c8fcc3cec3fd5d0a8f78db88d43f87942782.jpg"
+    ]);
     },
     //提交表单
     submitAddUser () {

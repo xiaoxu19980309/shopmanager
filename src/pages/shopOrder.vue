@@ -166,15 +166,13 @@ export default {
     if(mobile){
       this.mobile = mobile
     }else{
-        try {
-        let { mobile } = JSON.parse(localStorage.getItem('user'))
-        this.mobile = mobile
+        this.mobile = this.hasLogin()
+        if(this.mobile===''){
+          this.$toast('您还未登录')
+          this.$router.push({name: 'Login'})
+        }
         this.month = this.currentDate.getMonth()+1
         this.getOrder()
-      } catch (e) {
-        this.$toast('您还未登录')
-        this.$router.push({name: 'Login'})
-      }
     }
     
   },

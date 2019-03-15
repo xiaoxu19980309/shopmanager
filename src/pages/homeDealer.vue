@@ -39,7 +39,7 @@
       <div class="panel">
         <van-row class="iconitem">
           <van-col span="6">
-            <router-link to="">
+            <router-link to="/collectInformation">
               <i class="iconfont icon-bianji" style="color:#8db6cd"></i><br>
               <span>信息采集</span>
             </router-link>
@@ -123,12 +123,8 @@ export default {
 
     }
     
-    try {
-      let { mobile,name,shopinfo } = JSON.parse(localStorage.getItem('user'))
-      this.mobile = mobile
-      this.list = shopinfo || []
-      this.getsalenum()
-    } catch (e) {
+    this.mobile = this.hasLogin()
+    if(this.mobile===''){
       this.$toast('您还未登录')
       this.$router.push({name: 'Login'})
     }

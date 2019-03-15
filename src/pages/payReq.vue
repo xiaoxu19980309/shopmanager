@@ -13,13 +13,14 @@
         <!-- 支付宝账号列表 -->
         <template v-if="alilist.length > 0">
             <van-cell-group
-              v-for="(item) in alilist"
-              :key="item.id"
+              v-for="(item,i) in alilist"
+              :key="i"
             
             >
               <van-cell 
                 :label="`身份证号：${item.persol_id}\n支付宝PID：${item.ali_PID}`"
                 :title="`收款人姓名：${item.real_name}`"
+                @click="toast(i)"
               >
               </van-cell>
             </van-cell-group>
@@ -120,21 +121,18 @@ export default {
     if(mobile){
       this.mobile = mobile
     }else{
-      try{
-        let user = JSON.parse(localStorage.getItem('user'))
-        this.mobile = user.mobile
-        const mobile = this.mobile
-        this.loading = true
-        this.axios.post(API.getAlipay, {mobile}).then(data => {
-          this.loading = false
-          this.alilist = data
-        }).catch(e => {
-          this.loading = false
-        })
-      }catch (e) {
+      this.mobile = this.hasLogin()
+      if(this.mobile===''){
         this.$toast('您还未登录')
         this.$router.push({name: 'Login'})
       }
+      this.loading = true
+      this.axios.post(API.getAlipay, {mobile}).then(data => {
+        this.loading = false
+        this.alilist = data
+      }).catch(e => {
+        this.loading = false
+      })
       
     }
   },
@@ -201,6 +199,10 @@ export default {
     //显示增加收款账号表单
     add_alipay () {
       this.alipay = true
+    },
+    toast (i) {
+      let msg = "收款人姓名：" + this.alilist[i].real_name + "，身份证号：" + this.alilist[i].persol_id + "，支付宝PID：" + this.alilist[i].ali_PID
+      this.$toast(msg)
     },
     //增加收款账号
     submit_addalipay () {

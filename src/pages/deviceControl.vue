@@ -20,19 +20,19 @@
             :key="i"
           >
             <van-field 
-              :label="`设备${i+1},ID：`"  
+              :label="`设备${i+1}：`"  
               v-model=item.pcbid
-              disabled
+              @click="toast(i)"
             >
               <van-button size="small" slot="button" type="warning"
                 @click.native="deleteDevice(i)"
               >解绑
               </van-button>
             </van-field>
-            
 
            </van-cell-group>
        </template>
+       <p class="nomore" v-else>你还没有设备，请点击右上角“增加设备”按钮进行设备添加</p>
       <!-- <div class="totalnum">
               <van-row class="td-33">
                 <van-col span="8">
@@ -255,10 +255,8 @@ export default {
   },
   mounted () {
     this.areaList = areaList
-    try {
-      let { mobile,name,shopinfo } = JSON.parse(localStorage.getItem('user'))
-      this.mobile = mobile
-    } catch (e) {
+    this.mobile = this.hasLogin()
+    if(this.mobile===''){
       this.$toast('您还未登录')
       this.$router.push({name: 'Login'})
     }
@@ -348,6 +346,10 @@ export default {
       }
       return true
     },
+    toast (i) {
+      let msg = "设备ID：" + this.list[i].pcbid
+      this.$toast(msg)
+    },
     //增加设备
     addDevice () {
       this.add_dev_first = true
@@ -398,15 +400,6 @@ export default {
       }).catch(e => {
 
       })
-      // this.axios.post(API.deleteDevice, { pcbid }).then(data => {
-      //   let user = JSON.parse(localStorage.getItem('user'))
-      //   this.list.splice(i, 1)
-      //   localStorage.setItem('list', JSON.stringify(this.list))
-      //   this.$toast('设备解绑成功')
-      //   this.back()
-      // }).catch(e => {
-
-      // })
     },
     //为该设备绑定已有的收款账户,i为收款账户列表的下标
     bind_device(i){
@@ -494,13 +487,12 @@ export default {
 .home-wrap {
   background-color: #f2f2f2;
   min-height: 100vh;
+  height: 100vh;
   padding-top: 46px;
 }
 .totalnum {
   width: 100%;
-  /* height: 4.6rem; */
   background-color: #fff;
-  /* background-image:radial-gradient( #20B2AA, #48D1CC ); */
   color: black;
   text-align: center;
   font-size: 16px;

@@ -16,6 +16,18 @@ export default {
       
     },
 
+    //判断是否登录
+    hasLogin () {
+      try{
+        let user = JSON.parse(localStorage.getItem('user'))
+        const mobile = user.mobile
+        return mobile
+      }catch (e) {
+        return false
+      }
+    },
+
+
     setPID(pid) {
       localStorage.setItem('alipid', pid);
     },
@@ -54,7 +66,7 @@ export default {
 	    }
 	    else{
         alert("请用支付宝扫码!")
-        window.close()
+        //window.close()
 	    }
       
     },
