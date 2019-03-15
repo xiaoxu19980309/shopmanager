@@ -96,11 +96,9 @@
               >下一页
               </van-button>
             </div>
-
           </template>
           
         </div>
-          
       </div>
 
       <vm-back-top :bottom="70" :height="100" />
@@ -268,9 +266,7 @@ export default {
 }
 .totalnum {
   width: 100%;
-  /* height: 4.6rem; */
   background-color: #fff;
-  /* background-image:radial-gradient( #20B2AA, #48D1CC ); */
   color: black;
   text-align: center;
   font-size: 16px;

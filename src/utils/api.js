@@ -1,7 +1,7 @@
 
 const API = {
   login: '/shop/login',//登录
-  register: '/shop/register',//注册
+  register: '/User/register',//注册
   getCode: '/shop/mobile_code',//获取手机验证码
   logout: '/shop/logout',//登出
   editCard: '/shop/update_ident',//修改个人信息
@@ -21,7 +21,8 @@ const API = {
   delPlu: '/shop/del_plu',//解除plu绑定
   getnopluGoods: '/shop/noplu_goods',//获取没有plu的菜
   getsaletable: '/shop/vue_getShopSales',//获取销售统计表
-  getsale: '/shop/marketpayinfo',//获取销售折线图
+  getsale: '/shop/marketpayinfo',//
+  getsalegraph: '/shop/marketpayinfo2',//获取图表
   editShop: '/shop/edit_shopname',  //修改店铺名
   changePsd: '/shop/change_pwd',//修改密码
   checkDevice: '/shop/is_device',//检测秤是否未绑定

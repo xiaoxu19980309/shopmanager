@@ -78,7 +78,7 @@ import { API } from '@/utils/api'
 import Loading from '@/components/Loading'
 import commonMixin from '@/utils/mixin'
 export default {
-  name: 'Home',
+  name: 'HomeDealer',
   components: {
     [Cell.name]: Cell,
     [CellGroup.name]: CellGroup,

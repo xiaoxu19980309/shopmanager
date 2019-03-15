@@ -17,17 +17,11 @@
       </li>
       <li>
         <i class="iconfont icon-user"></i>
-        <input type="text" placeholder="用户类型" v-model="form.kind">
+        <input type="text" placeholder="用户类型" v-model="form.type">
         <van-button size="small" slot="button" type="primary"
             @click.native="showpicker = true"
           >选择用户类型
           </van-button>
-        <!-- <select name="" id="">
-          <option value="0">请选择用户类型</option>
-          <option value="1">商户</option>
-          <option value="2">经销商</option>
-          <option value="3">厂家</option>
-        </select> -->
       </li>
       <li>
         <i class="iconfont icon-code"></i>
@@ -83,7 +77,8 @@ export default {
         code: '',
         password: '',
         name: '',
-        kind: '',
+        type: '',
+        typeindex: 0,
       },
       columns: ['商户', '经销商', '厂家'],
       psdConfirm: '',
@@ -157,19 +152,24 @@ export default {
       }, 1000)
     },
     onConfirm(value, index) {
-      this.form.kind = this.columns[index]
+      this.form.type = this.columns[index]
+      this.form.typeindex = index
       this.showpicker = false
     },
     onCancel() {
       this.showpicker = false
     },
     register () {
+      // console.log(this.form)
       if (!this.validate()) return
       this.loading = true
-      const { mobile, password, type, code } = this.form
-      let params = { mobile, password, type: 1, code }
-      if (name) {
-        params = { ...params, nickname }
+      const { mobile, password, code } = this.form
+      let params = { mobile, password, code }
+      const type = this.form.typeindex
+      params = { ...params, type }
+      if (this.form.name) {
+        const name = this.form.name
+        params = { ...params, name }
       }
       this.axios.post(API.register, params).then(data => {
         this.loading = false

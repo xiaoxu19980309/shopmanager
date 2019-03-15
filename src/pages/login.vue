@@ -72,7 +72,11 @@ export default {
       }).then(data => {
         this.loading = false
         localStorage.setItem('user', JSON.stringify(data))
+        if(data.type===0)
         this.$router.push({name: 'Home'})
+        else if(data.type===1){
+        this.$router.push({name: 'HomeDealer'})
+        }
       }).catch(e => {
         this.loading = false
       })
